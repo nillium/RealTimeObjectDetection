@@ -23,8 +23,8 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
 
 while True:
     success, img = cap.read()
-    results = model(img, stream=True, classes=[0,1,2,3,4,5])
-
+    results = model(img, stream=True, classes=[47, 49])
+    
     # coordinates
     for r in results:
         boxes = r.boxes
