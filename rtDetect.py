@@ -19,13 +19,11 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
               "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed",
               "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone",
               "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
-              "teddy bear", "hair drier", "toothbrush"
-              ]
-
+              "teddy bear", "hair drier", "toothbrush"]
 
 while True:
     success, img = cap.read()
-    results = model(img, stream=True)
+    results = model(img, stream=True, classes=[0,1,2,3,4,5])
 
     # coordinates
     for r in results:
@@ -59,6 +57,6 @@ while True:
     cv2.imshow('Webcam', img)
     if cv2.waitKey(1) == ord('q'):
         break
-
+ 
 cap.release()
 cv2.destroyAllWindows()
