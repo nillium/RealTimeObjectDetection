@@ -1,6 +1,8 @@
 from ultralytics import YOLO
 import cv2
-import math 
+import math
+import time
+
 # start webcam
 cap = cv2.VideoCapture(0)
 cap.set(3, 640)
@@ -8,6 +10,11 @@ cap.set(4, 480)
 
 # model
 model = YOLO("yolo-Weights/yolov8n.pt")
+
+# timing
+start_time = 0
+end_time = 0
+elapsed_time = 0
 
 # object classes
 classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
@@ -23,7 +30,9 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
 
 while True:
     success, img = cap.read()
-    results = model(img, stream=True, classes=[47, 49])
+    results = model(img, stream=True, classes=[0, 47, 49])
+    elapsed_time = end_time - start_time
+    start_time = time.time()
     
     # coordinates
     for r in results:
@@ -52,9 +61,12 @@ while True:
             color = (255, 0, 0)
             thickness = 2
 
-            cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
+            cv2.putText(img, classNames[cls]+str(round(elapsed_time, 3)), org, font, fontScale, color, thickness)
 
     cv2.imshow('Webcam', img)
+
+    end_time = time.time()    
+
     if cv2.waitKey(1) == ord('q'):
         break
  
