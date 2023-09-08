@@ -1,3 +1,4 @@
+from random import paretovariate
 from tkinter import CENTER
 from ultralytics import YOLO
 import cv2
@@ -16,7 +17,7 @@ model = YOLO("yolo-Weights/yolov8n.pt")
 
 # timing init
 start_time = 0
-end_time = 0
+end_time = 1
 elapsed_time = 0
 
 # center position calculation init
@@ -26,6 +27,8 @@ cy = 0
 # velocity init
 vel_x = 0
 vel_y = 0
+prev_x = 0
+prev_y = 0
 
 # object classes
 classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
@@ -57,13 +60,13 @@ while True:
             # center position calculation
             cx = x1 + ((x2-x1)*0.5)
             cy = y1 + ((y2-y1)*0.5)
-            cent_pnt = (round(cx),round(cy))
+            cent_pnt = (round(cx)-10,round(cy))
             cent_txt = (round(cx),round(cy)+10)
             
             # velocity calculation
-            vel_x = (cx-prev_cx)/elapsed_time
-            vel_y = (cy-prev_cy)/elapsed_time
-            t_avg_vel_x = (vel_x + prev_vel_x)*0.5
+            vel_x = (x1-prev_x)/elapsed_time
+            #vel_y = (y1-prev_y)/elapsed_time
+            #t_avg_vel_x = (vel_x + prev_vel_x)*0.5
                                          
             # put box in cam
             cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
@@ -85,16 +88,19 @@ while True:
             thickness = 2
 
             cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
-            cv2.putText(img, str(round(t_avg_vel_x, 2))+" px/s", cent_txt, font, fontScale, color, thickness)
+            cv2.putText(img, str(round(vel_x, 3))+" px/s", cent_txt, font, fontScale, color, thickness)
+            
+            prev_x = x1
+            prev_y = y1
             
 
     cv2.imshow('Webcam', img)
 
     end_time = time.time()
     
-    prev_cx = cx
-    prev_cy = cy
-    prev_vel_x = vel_x
+    #prev_cx = cx
+    #prev_cy = cy
+    #prev_vel_x = vel_x
     
     if cv2.waitKey(1) == ord('q'):
         break
